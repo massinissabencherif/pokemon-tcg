@@ -1,0 +1,80 @@
+body {
+    font-family: sans-serif;
+    text-align: center;
+    background-color: #f0f8ff;
+  }
+  
+  .card {
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    padding: 20px;
+    display: inline-block;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin: 20px;
+    width: 180px;
+    height: 240px;
+    box-sizing: border-box;
+    vertical-align: top;
+  }
+  
+  /* Couleurs de fond par type Pokémon */
+.type-fire {
+    background-color: #ffcccb;
+  }
+  
+  .type-water {
+    background-color: #add8e6;
+  }
+  
+  .type-grass {
+    background-color: #d0f0c0;
+  }
+  
+  .type-electric {
+    background-color: #fefea3;
+  }
+  
+  .type-psychic {
+    background-color: #f5c6ff;
+  }
+  
+  .type-rock {
+    background-color: #d5d5d5;
+  }
+  
+  .type-ground {
+    background-color: #e4cda1;
+  }
+  
+  .type-bug {
+    background-color: #d0e6a5;
+  }
+  
+  .type-poison {
+    background-color: #e0b0ff;
+  }
+  
+  .type-normal {
+    background-color: #f2f2f2;
+  }
+  
+  /* Ajoute d'autres types si besoin */
+  
+  #draw-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #222;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    margin-bottom: 20px;
+  }
+  
+  #draw-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
