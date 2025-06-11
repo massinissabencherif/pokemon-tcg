@@ -8,8 +8,17 @@
 <body>
   <h1>Carte Pokémon</h1>
   <button id="draw-button">🎴 Tirer un nouveau pack</button>
-  <div id="card-container"></div>
-
-  <script type="module" src="script.js"></script>
+  <div id="zones">
+    <section id="deck-container">
+      <h2>Pioche</h2>
+      <div class="zone" id="deck-zone"></div>
+    </section>
+  
+    <section id="hand-container">
+      <h2>Main du joueur</h2>
+      <div class="zone" id="hand-zone"></div>
+    </section>
+  </div>
+    <script type="module" src="script.js"></script>
 </body>
 </html>

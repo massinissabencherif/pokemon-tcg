@@ -1,54 +1,29 @@
 // script.js
 
-const container = document.getElementById('card-container');
+import { Card } from './modules/Card.js';
+
+const deckZone = document.getElementById('deck-zone');
+const handZone = document.getElementById('hand-zone');
 const drawButton = document.getElementById('draw-button');
-const COOLDOWN_TIME = 5 * 60 * 1000; // 5 minutes en ms
+const COOLDOWN_TIME = 5 * 60 * 1000;
 const LAST_DRAW_KEY = 'lastDrawTime';
 const LAST_PACK_KEY = 'lastDrawPack';
 
-// Utilitaire : Tirage aléatoire d’un ID de Pokémon
 function getRandomPokemonId() {
   return Math.floor(Math.random() * 151) + 1;
 }
 
-// Affichage d’un Pokémon dans le DOM
 function displayPokemon(data) {
-  const card = document.createElement('div');
-  card.classList.add('card');
-
-  const img = document.createElement('img');
-  img.src = data.sprites?.front_default || data.image;
-  img.alt = data.name;
-
-  const name = document.createElement('h2');
-  name.textContent = data.name;
-
-  const type = document.createElement('p');
-  type.textContent = `Type: ${Array.isArray(data.types) ? data.types.join(', ') : ''}`;
-
-  let primaryType = 'normal';
-
-  if (Array.isArray(data.types)) {
-    primaryType = typeof data.types[0] === 'string'
-      ? data.types[0]
-      : data.types[0]?.type?.name || 'normal';
-  }
-  
-  card.classList.add(`type-${primaryType}`);
-  
-
-  card.appendChild(img);
-  card.appendChild(name);
-  card.appendChild(type);
-  container.appendChild(card);
+  const cardObj = new Card(data);
+  const domElement = cardObj.render();
+  deckZone.appendChild(domElement);
 }
 
-// Charge un Pokémon depuis l’API et retourne un objet simplifié
 async function loadPokemon(id) {
   const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
   const data = await response.json();
 
-  displayPokemon(data); // affichage
+  displayPokemon(data);
   return {
     id: data.id,
     name: data.name,
@@ -57,9 +32,8 @@ async function loadPokemon(id) {
   };
 }
 
-// Tirer un pack de X Pokémon (par défaut 5)
 async function loadRandomPack(count = 5) {
-  container.innerHTML = '';
+  deckZone.innerHTML = '';
   const pack = [];
 
   for (let i = 0; i < count; i++) {
@@ -68,12 +42,10 @@ async function loadRandomPack(count = 5) {
     pack.push(pokemonData);
   }
 
-  // Sauvegarde dans localStorage
   localStorage.setItem(LAST_PACK_KEY, JSON.stringify(pack));
   localStorage.setItem(LAST_DRAW_KEY, Date.now().toString());
 }
 
-// Vérifie si on peut tirer
 function canDraw() {
   const lastDraw = localStorage.getItem(LAST_DRAW_KEY);
   if (!lastDraw) return true;
@@ -82,7 +54,6 @@ function canDraw() {
   return now - parseInt(lastDraw, 10) >= COOLDOWN_TIME;
 }
 
-// Met à jour l'état du bouton et réaffiche le dernier pack si bloqué
 function updateButtonState() {
   if (canDraw()) {
     drawButton.disabled = false;
@@ -97,7 +68,7 @@ function updateButtonState() {
 
     const savedPack = localStorage.getItem(LAST_PACK_KEY);
     if (savedPack) {
-      container.innerHTML = '';
+      deckZone.innerHTML = '';
       const packData = JSON.parse(savedPack);
       packData.forEach(displayPokemon);
     }
@@ -106,16 +77,32 @@ function updateButtonState() {
   }
 }
 
-// Clic bouton : tirer un nouveau pack
 drawButton.addEventListener('click', async () => {
-    if (!canDraw()) return;
-  
-    await loadRandomPack();
-  
-    // 🔁 délai de 1 seconde avant de mettre à jour le bouton
-    setTimeout(updateButtonState, 1000);
-  });
-  
+  if (!canDraw()) return;
 
-// Initialisation
+  await loadRandomPack();
+  setTimeout(updateButtonState, 1000);
+});
+
 updateButtonState();
+
+// DRAG & DROP entre pioche et main
+
+handZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+});
+
+handZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  const data = e.dataTransfer.getData('text/plain');
+  const cardData = JSON.parse(data);
+  const card = new Card(cardData);
+  handZone.appendChild(card.render());
+
+  const currentHand = [...handZone.querySelectorAll('.card')];
+  if (currentHand.length > 1) {
+    const removed = currentHand[0];
+    handZone.removeChild(removed);
+    deckZone.appendChild(removed);
+  }
+});

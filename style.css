@@ -78,3 +78,32 @@ body {
     cursor: not-allowed;
   }
   
+  #zones {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  
+  #deck-container,
+  #hand-container {
+    width: 45%;
+    background-color: #ffffffaa;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  
+  .zone {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-height: 200px;
+    margin-top: 10px;
+    background-color: #f5f5f5;
+    border: 2px dashed #aaa;
+    border-radius: 10px;
+    padding: 10px;
+  }
+  
